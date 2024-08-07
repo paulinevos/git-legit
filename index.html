@@ -22,18 +22,73 @@
             by <a href="https://twitter.com/vanamerongen" class="underline text-blue-600 visited:text-purple-600">@vanamerongen</a>.
             Sign up for the wait list now and receive a discount on launch day.
           </p>
-            <form class="mx-auto mt-10 flex max-w-md gap-x-4">
+            <form id="signupForm" class="mx-auto mt-10 flex max-w-md gap-x-4">
               <label for="email-address" class="sr-only">Email address</label>
               <input id="email-address" name="email" type="email" autocomplete="email" required class="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-black shadow-sm ring-1 ring-inset ring-gray-900/10 focus:ring-2 focus:ring-inset focus:ring-grey sm:text-sm sm:leading-6" placeholder="Enter your email">
               <button type="submit" class="flex-none rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Join waitlist</button>
             </form>
+
+          <p class="mt-6 text-sm text-gray-400" aria-hidden="true" hidden="hidden" id="loader">Joining waitlist...</p>
+          <p class="mt-6 text-gray-600" aria-hidden="true" hidden="hidden" id="messageSuccess">
+            <strong>Success!</strong> Thank you for joining the waitlist. Keep an eye on your inbox for updates.
+          </p>
         </div>
-      </div>
+        </div>
     </div>
     <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
       <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
     </div>
   </div>
 </main>
+
+<script>
+  document.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get("success")
+
+    if (success) {
+      document.getElementById("messageSuccess").show()
+    }
+  }
+
+  let form = document.getElementById('signupForm')
+  let loadingMessage = document.getElementById('loader')
+  let formUrl = 'https://gitlegit.lemonsqueezy.com/email-subscribe/external' // Change "my-store" to your store slug
+  let redirectUrl = 'https://gitlegit.dev?success=1' // Use your own URL here
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    showLoading()
+
+    try {
+      let response = await fetch(formUrl, {
+        method: 'POST',
+        body: new FormData(e.target),
+      });
+
+      hideLoading()
+
+      if (response.ok) {
+        window.location = redirectUrl
+      } else {
+        alert('Sorry, we couldn\'t subscribe you.')
+      }
+
+    } catch (error) {
+      hideLoading()
+      alert('Sorry, there was an issue: ' + error)
+    }
+  })
+
+  let showLoading = () => {
+    form.querySelector('button').setAttribute('disabled', 'disabled')
+    loadingMessage.style.display = 'block'
+  }
+  let hideLoading = () => {
+    form.querySelector('button').removeAttribute('disabled')
+    loadingMessage.style.display = 'none'
+  }
+</script>
 </body>
 </html>
