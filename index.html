@@ -42,12 +42,14 @@
 </main>
 
 <script>
-  document.onload = () => {
+  window.onload = e => {
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get("success")
 
+    console.log(urlParams)
+
     if (success) {
-      document.getElementById("messageSuccess").show()
+      document.getElementById("messageSuccess").style.display = "block"
     }
   }
 
